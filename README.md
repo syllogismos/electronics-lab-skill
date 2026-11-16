@@ -5,7 +5,7 @@ A Claude Code skill that sets up a home electronics lab and gets you from zero t
 Tell Claude what you want to build and where you live. It will:
 
 - **Make a parts cart** for your level (beginner, expert or full kit wanker), using shops in your country. It checks live prices and stock, and catches the cables, connectors and adapters that first carts usually miss.
-- **Teach the safety basics** before you power anything: batteries, the soldering iron, mains, and how to avoid frying parts.
+- **Teach the safety basics** before you power anything: batteries, the soldering iron, mains, how to avoid frying parts, and how to keep a short on your board from killing your computer's USB port (a USB isolator, and never probing a board that's plugged in).
 - **Draw wiring and soldering diagrams** that look like your actual board and breadboard. Each diagram has a check to do before you plug in, and Claude compares a photo of your wiring with it.
 - **Get 3D-printed parts made** without owning a printer. It finds a proven file, or writes one in OpenSCAD, checks it, and walks you through ordering from a print service.
 - **Flash and debug boards** like ESP32 and Arduino from your computer.

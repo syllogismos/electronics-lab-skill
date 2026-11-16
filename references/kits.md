@@ -23,6 +23,7 @@ The goal is to solder well, measure safely, prototype without soldering, and pow
 - Safety glasses
 - 2 breadboards and jumper wires
 - A USB data cable that fits both the board and the computer (a USB-C-only laptop needs USB-C to USB-C)
+- A USB isolator, so a short on anything you wire or solder can't kill the computer's USB port (see "Protecting the computer" below)
 - The board
 - The project's parts from `projects.md`
 
@@ -78,6 +79,17 @@ Everything else below is a **lab extra**. Add extras when the budget allows, or 
 | Battery connectors | Matching plug and socket pairs | Measure the pitch or match the board's socket. JST-PH 2.0 is common; check the polarity with a meter, because cheap batteries are sometimes wired the opposite way round. | 50–150 | 5 |
 | Slide switches | Small on/off switches | SS12D00 or similar, pack of 10 | 50–100 | 4 |
 | 18650 holder | Clip that holds one cell, with wire leads | Only if using 18650s | 30–80 | 2 |
+
+### Protecting the computer
+
+A short on a USB-powered board pulls straight from the computer's USB port, and can kill that port for good (`safety.md`, section 8). This costs less than a single port repair.
+
+| Item | What it is | Spec to match | ₹ | $ |
+|---|---|---|---|---|
+| USB isolator | Stick the size of a pen drive between the computer and the board. It passes USB data across a gap with no wire, and makes its own 5 V for the board side. | ADuM3160 chip, **in a case**: a bare board's computer-side pins can be shorted by a loose wire. Full speed, 12 Mbps (fine for ESP32, Arduino and RP2040). It supplies little current: one maker states 200 mA, and most don't say. That's enough to flash, but not for Wi-Fi or motors. Most are USB-A plug to USB-A socket, so add a USB-A to USB-C data cable for a USB-C board, and a USB-C to A adapter for a USB-C-only computer. The single-port one is enough. | 800–950 | 25 |
+| USB-C power meter (optional at this level) | Inline dongle that shows the current into a board | Use it for the first power-up of a new board from a phone charger. An idle ESP32 draws about 0.05–0.15 A; far more means a short. | 500–1,500 | 15–30 |
+
+A powered USB hub is a weaker substitute: it separates only the 5 V power, while GND and data still connect to the computer.
 
 ### First boards (pick one or two)
 

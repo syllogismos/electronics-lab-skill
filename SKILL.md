@@ -58,12 +58,13 @@ Before the first power-up, and ideally before the parts arrive, give the short v
 
 1. **Stay on the low-voltage side.** USB, batteries and a bench supply are fine. Never open, wire or modify anything that plugs into a wall socket (230 V in India, the UK and Europe; 120 V in North America). To switch a lamp or a fan, buy a certified smart plug and control that.
 2. **Unplug before you move any wire.** Every time.
-3. **Check before power.** With the power unplugged, the multimeter must *not* beep between + and GND. Check a battery's polarity with the meter before connecting it. Send a photo of the wiring for a check.
-4. **Respect lithium batteries.** Never let the two leads touch. Cut and solder one lead at a time. Charge on a hard surface where you can see it, never overnight, and never a battery that is swollen, dented or hot.
-5. **The iron is about 350 °C.** Keep it in its stand. Switch it off when you walk away. For a burn, hold it under cool running water for 20 minutes.
-6. **Protect eyes and lungs.** Wear glasses when cutting leads. Use a fan that pulls the solder smoke away from your face. With leaded solder, wash your hands and keep food off the bench.
-7. **Know the board's voltage.** Most modern boards run at 3.3 V, and 5 V on a signal pin can kill them. A pin can light one LED through a resistor, but it can't drive a motor, relay or LED strip directly.
-8. **If something gets hot, smells or smokes, unplug first** and investigate after.
+3. **Check before power.** With USB **and** battery unplugged, the multimeter must *not* beep between + and GND. Check a battery's polarity with the meter before connecting it. Send a photo of the wiring for a check.
+4. **Protect the computer.** Never probe, solder or rewire a board while it's plugged into the computer: one probe slip across two pins can kill that USB port for good. Power a new or modified board from a phone charger or power bank first. Plug anything you've wired or soldered into the computer only through a **USB isolator** (about ₹800–950 or $25). Details are in `references/safety.md`, section 8.
+5. **Respect lithium batteries.** Never let the two leads touch. Cut and solder one lead at a time. Charge on a hard surface where you can see it, never overnight, and never a battery that is swollen, dented or hot.
+6. **The iron is about 350 °C.** Keep it in its stand. Switch it off when you walk away. For a burn, hold it under cool running water for 20 minutes.
+7. **Protect eyes and lungs.** Wear glasses when cutting leads. Use a fan that pulls the solder smoke away from your face. With leaded solder, wash your hands and keep food off the bench.
+8. **Know the board's voltage.** Most modern boards run at 3.3 V, and 5 V on a signal pin can kill them. A pin can light one LED through a resistor, but it can't drive a motor, relay or LED strip directly.
+9. **If something gets hot, smells or smokes, unplug first** and investigate after.
 
 ## Step 3: Build the cart
 
@@ -134,7 +135,7 @@ Before the person wires or solders anything, draw it. Read `references/diagrams.
 - Number and colour every wire: red for +, black for GND. Under the drawing, add a table with the number, from, to, colour and why.
 - Show the breadboard's real row numbers, which holes are joined inside, and any split in the power rails. A board placed one row off turned a 5 V wire into a GND wire. A photo caught it before power was applied.
 - Spell out timing: what goes in before plugging in, and what comes out after uploading. For example, the "flash mode" wire.
-- End with a check before power, done with the USB unplugged. List the pairs that must beep, and the pairs that must not beep (+ to GND). Then give the voltages expected after power-up.
+- End with a check before power. Its first line is always "USB and battery out", in every message, even right after a step that had USB plugged in. List the pairs that must beep, and the pairs that must not beep (+ to GND). Then give the voltages expected after power-up. Never ask for a beep or resistance check on a board that is still plugged in.
 - Then ask for a photo of the real wiring. Compare it wire by wire with the table, and say "matches" or name the exact wire that's wrong, before they power up.
 - When something gets corrected, update the same artifact at the same link and say what changed.
 
@@ -169,6 +170,11 @@ When a project needs a case, mount, clip or frame, read `references/3d-printing.
 
 Claude can do most of the computer side: install tools, compile, flash, and read the serial output. The person only plugs and replugs. To make that safe:
 
+- **Keep the computer out of reach of the board's faults.** A board straight out of its bag can go into the computer directly. Anything the person has wired or soldered goes through a USB isolator, and only after the unpowered beep checks pass and a first power-up on a phone charger looks normal (lights on, nothing warm).
+  - Common isolators have a USB-A plug and a USB-A socket. Plug the isolator into a USB-A port, then use a USB-A to USB-C data cable to a USB-C board.
+  - The isolator supplies little current (one maker states 200 mA). That's enough to flash, but not for Wi-Fi or motors. On ESP32 boards, hold BOOT while plugging in so the board starts in flash mode with Wi-Fi off. Run it from a charger, power bank or battery afterwards.
+  - For boards that will run on a battery or drive motors, add Wi-Fi firmware updates (OTA) and logs over Wi-Fi early. Then the cable is needed once, and testing never connects the computer to the battery or motors.
+  - Never suggest trying a suspect board in another port of the same computer.
 - **Confirm the port and the board before writing anything.** How depends on the board:
   - **USB-serial chip** (most ESP32 DevKits, with a CH340 or CP2102 chip near the USB port): run `esptool chip-id`. It reads only.
   - **Native USB** (ESP32-S3, C3 and C6, and XIAO boards): the port shows as `usbmodem` or `ttyACM`. If an upload fails, hold BOOT, tap RESET, release BOOT, and try again.
@@ -212,7 +218,7 @@ Read each one only when its step comes up:
 - `references/kits.md`: tools and parts for each level, with specs to match and typical prices. For building a cart.
 - `references/shops.md`: shops, local markets, 3D-print services and fetch notes by country, plus buying traps. For building a cart or ordering prints.
 - `references/projects.md`: step-by-step guides for the first projects. Read it once the project is chosen.
-- `references/safety.md`: the full safety rules, covering electricity, batteries, soldering, fumes, protecting components, 3D printers, lasers and CNC. The Step 2 summary is enough for the first reply. Read the battery and soldering sections when that work starts.
+- `references/safety.md`: the full safety rules, covering electricity, batteries, soldering, fumes, protecting components, protecting the computer's USB ports, 3D printers, lasers and CNC. The Step 2 summary is enough for the first reply. Read the battery and soldering sections when that work starts.
 - `references/diagrams.md`: how to draw wiring, breadboard and soldering diagrams as artifacts. Only when drawing one.
 - `references/3d-printing.md`: finding, checking and generating files, design rules, materials and ordering.
 - `references/pitfalls.md`: real mistakes from real builds, and how to avoid them. Skim it once per session.

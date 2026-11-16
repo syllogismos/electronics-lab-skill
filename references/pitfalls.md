@@ -15,6 +15,8 @@ Every item here happened in real sessions where a complete beginner set up a ben
 - **Verify your own artifacts against the photo** when asked, and never present an inferred pin order as fact.
 - **For a list to copy, use plain lines** without checkboxes or dashes.
 - **Say when soldering isn't needed.** USB-C powers and flashes most boards, and a USB power bank makes them wireless with no soldering. (Claude first said a battery had to be soldered on.)
+- **Every meter check starts with "USB and battery out".** Write it every time, even when the last step had the power out. (A check said only "battery still out". The person probed a board that was still powered from the computer, and the computer's USB port died. See "The computer's USB ports" below.)
+- **Never suggest trying a suspect board in another port** of the same computer. The person rightly asked "what if that port also gets fried?" Check the board unpowered, power it from a charger, and use an isolator.
 
 ## Buying
 
@@ -40,6 +42,14 @@ Every item here happened in real sessions where a complete beginner set up a ben
 - **Simplest path first:** run on USB, then on a USB power bank, then on a soldered battery with a switch.
 - **ESP32-CAM brownouts** under Wi-Fi load: it needs a solid 5 V supply that can deliver at least 500 mA.
 - **Heat.** Wi-Fi boards under heavy use can pass 65–70 °C. Fit any heatsink supplied, vent the case, and print it in PETG or better.
+
+## The computer's USB ports
+
+- **A probe slip on a USB-powered board can kill the computer's port.** (A XIAO ESP32-S3 on a perfboard had a 470 µF capacitor soldered across its 5V and GND pins. The person did a beep check on the neighbouring GND and 3V3 pins while it was still plugged into a Mac mini, and a probe touched two pins. The Mac hard-reset; its reset record showed `Boot faults: dbg_rst,reset_in_2`. Afterwards that USB-C port counted zero connections. Phones showed "charging" and then dropped, over and over. It survived nothing: a full power-off, a macOS update and two cables all failed to bring it back. The fix is a board-level replacement of that port's USB-C controller chip, a TI CD3217.) Safety section 8 has the rules.
+- **Big capacitors on a USB board's 5 V make shorts worse.** (The 470 µF capacitor worked through several plug-ins, but USB allows about 10 µF. In a short it dumps its charge, then pulls a large surge when the short clears.) Put it behind the isolator, or on the battery side of the diode.
+- **Plug the board in through a USB isolator, not straight into the computer,** once it has the person's own wiring or solder on it. (After the port died, the person was afraid to connect anything to their only computer. An ADuM3160 isolator for ₹800–950 removes that risk.) Cased beats bare: a bare board's computer-side pins can be shorted by a stray wire clipping.
+- **Move battery-powered builds to Wi-Fi updates early.** (The drone only needed USB for flashing and reading logs. With firmware updates (OTA) and logs over Wi-Fi, the computer never touches the battery or motor circuit.)
+- **"No device connected" in System Information's Thunderbolt section is normal** for USB devices. (A USB SSD showed under "USB 3.1 Bus" at 10 Gb/s, and both Thunderbolt entries said "No device connected", which looked alarming. To see whether a Mac port is alive, read `ConnectionActive` and `ConnectionCount` per port with `ioreg`.)
 
 ## Wiring and breadboards
 

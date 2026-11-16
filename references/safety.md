@@ -10,10 +10,11 @@ Give the short version from SKILL.md before the first power-up. Use the sections
 5. Fumes, lead and chemicals
 6. Eyes, hands and small parts
 7. Protecting the components
-8. Using the multimeter safely
-9. 3D printers, lasers and CNC
-10. Fire and first aid
-11. Kids and pets
+8. Protecting the computer's USB ports
+9. Using the multimeter safely
+10. 3D printers, lasers and CNC
+11. Fire and first aid
+12. Kids and pets
 
 ---
 
@@ -119,14 +120,54 @@ These rules save parts and hours of debugging.
 - **Heat while running.** Wi-Fi boards get hot under heavy use, and can pass 65–70 °C. Fit the supplied heatsink, leave air gaps, and don't seal it in PLA, which softens near 55–60 °C.
 - **Don't hot-plug sensors.** Plug them in with the power off.
 
-## 8. Using the multimeter safely
+## 8. Protecting the computer's USB ports
+
+The computer is the most expensive thing on the bench, and a board plugged into it by USB is wired straight to its 5 V supply.
+
+**What can happen.** A short on a USB-powered board, from a probe slip, a solder bridge, a wrong wire or a faulty part, pulls current straight from the computer's port.
+- Usually the port's protection cuts power, and the computer shows a message such as "USB Accessories Disabled".
+- A fast, hard short can instead reset the whole computer. It can also permanently kill that port's controller chip; on Macs, each USB-C port has its own controller chip. The port then stops detecting anything, and the fix is board-level micro-soldering.
+- A large capacitor on the board's 5 V makes a short harsher: it dumps its charge into the short, then pulls a big surge when the short clears. USB allows only about 10 µF on a device's 5 V line.
+
+**The rules:**
+1. **Never probe, solder or rewire while the board is plugged in.** Every beep or resistance check starts with "USB and battery out". Header pins are 2.54 mm apart, and a probe tip easily touches two at once.
+2. **Check for shorts unpowered first.** 5 V to GND, 3.3 V to GND, 5 V to 3.3 V, and battery + to −.
+3. **First power-up of a new or modified board comes from a phone charger or power bank,** not the computer. If something is still shorted, the cheap charger takes it.
+   - A USB power meter (a small inline dongle) shows the current. An idle ESP32 draws about 0.05–0.15 A; far more than that means unplug.
+   - Lights on and nothing warm after 10 seconds means it's ready for the computer.
+4. **Plug anything you've wired or soldered into the computer through a USB isolator.** A board straight out of its bag is fine plugged in directly.
+5. **Battery and USB at the same time only through the isolator,** and only if the design allows it. Motor current and the computer should never share a wire.
+6. **For boards that run on batteries or drive motors, move updates and logs to Wi-Fi** (OTA updates) once, so later testing needs no cable at all.
+
+**USB isolator.** A stick about the size of a pen drive, built on the ADuM3160 chip.
+- **How it protects:** it passes USB data across a gap with no wire between the two sides, and makes its own 5 V for the board side with a small isolated converter. A short on the board side can't reach the computer.
+- **Limits:**
+  - It runs only at USB full speed (12 Mbps). That's fine for ESP32, Arduino, RP2040 and USB-serial chips (CH340, CP2102), but not for USB 3 drives or cameras.
+  - It supplies little current. One maker states 200 mA, and most listings don't say. That's enough for flashing, but not for Wi-Fi or motors. Hold BOOT while plugging in an ESP32 so it flashes with Wi-Fi off.
+- **Connectors:** most have a USB-A plug and a USB-A socket. Use a USB-A port on the computer, and a USB-A to USB-C data cable to a USB-C board. On a USB-C-only computer, add a USB-C to USB-A adapter on the computer side.
+- **Pick one in a case.** On a bare board, the computer-side pins are exposed: a loose wire clipping or a metal tool touching them shorts the computer's 5 V directly. The single-port isolator is enough; 4-port isolated hubs cost more and come as bare boards.
+- **Prices:** about ₹800–950 at Robu or Robocraze (Nov 2026), and about $25 on Amazon US. Search "ADuM3160 USB isolator".
+
+**A powered USB hub** (one with its own power adapter) is a weaker substitute:
+- It usually absorbs a 5 V-to-GND short, because its ports take power from its own adapter.
+- But GND and the data wires still connect straight to the computer, so it doesn't stop other faults.
+- Many cheap hubs fall back to drawing power from the computer when their adapter is off.
+
+**If a port dies:**
+- **Check it.** On a Mac, `ioreg -w0 -l | grep -E '"(ConnectionActive|ConnectionCount|TransportsActive)"'` shows each port. A port that stays at `ConnectionActive = No` and `ConnectionCount = 0` with a phone plugged in has lost its controller.
+- **Don't misread System Information.** Its Thunderbolt section lists only Thunderbolt devices, so "No device connected" there is normal for USB drives.
+- **Leave the dead port empty.**
+- **Get a chip-level repair quote.** A micro-soldering shop can replace that port's controller chip. Authorised service usually replaces the whole main board, for far more money.
+
+## 9. Using the multimeter safely
 
 - **Black probe in COM; red probe in VΩ** for nearly everything: voltage, resistance, continuity.
 - **The mA and 10 A jacks are only for measuring current,** with the meter placed *in series* in the circuit. If you then measure voltage with the red probe still in an A jack, you short the source; at best you blow the meter's fuse. Move the red probe back to VΩ right after any current measurement.
-- **Measure resistance and continuity only with the power off.**
+- **Measure resistance and continuity only with the power off: USB and battery both out.** Beep mode on a powered board gives wrong readings, and a probe slip across neighbouring pins shorts whatever is feeding the board. If that's the computer's USB port, it can kill the port (section 8).
+- **On a live board, measure only DC volts,** on points far apart, with one probe clipped in place.
 - **Meters are rated by category** (CAT II, III and IV). A cheap meter isn't safe on mains, which is one more reason to stay off mains.
 
-## 9. 3D printers, lasers and CNC
+## 10. 3D printers, lasers and CNC
 
 - **FDM 3D printers:**
   - The nozzle runs at about 200–260 °C and the bed at 60–110 °C.
@@ -150,7 +191,7 @@ These rules save parts and hours of debugging.
   - Keep the emergency stop within reach.
   - Collect the dust. MDF and fibreglass PCB dust are harmful, so use a vacuum or wet cutting and a mask.
 
-## 10. Fire and first aid
+## 11. Fire and first aid
 
 - **Keep near the bench:** an ABC or CO2 extinguisher, a fire blanket, and a metal tin or pot of sand for a hot or swelling battery.
 - **Battery fire:**
@@ -160,7 +201,7 @@ These rules save parts and hours of debugging.
 - **Burns:** cool running water for 20 minutes. Don't use ice or butter. Get medical help for burns larger than a coin, or on the face or hands, if they blister badly.
 - **Cuts:** keep a basic first-aid kit on the shelf.
 
-## 11. Kids and pets
+## 12. Kids and pets
 
 - **Button cells and small magnets are emergencies if swallowed;** they burn through tissue within hours. Store them locked away.
 - **Switch the iron off and put it out of reach** when children are around.
